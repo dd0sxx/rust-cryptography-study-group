@@ -1,0 +1,17 @@
+[package]
+name = "vignere-cipher"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+dialoguer = "0.10.2"
+console = "0.15.0"[package]
+name = "week-1"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
