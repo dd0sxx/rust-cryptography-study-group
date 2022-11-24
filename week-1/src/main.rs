@@ -36,7 +36,7 @@ fn main() {
                     .expect("Failed to read line");
 
                 let res = decode_vignere(ciphertext, key);
-                println!("your message ser: {}", res);
+                println!("your message ser: {}", res.unwrap());
             }
         }
         Err(err) => {
@@ -54,6 +54,9 @@ fn char_to_pos(input: char) -> usize {
 
 pub fn encode_vignere(message: String, key: String) -> Result<String, &'static str> {
     let k = key.trim().to_string().to_lowercase();
+    if !k.chars().all(char::is_alphabetic) {
+        return Err("key must be alphabetic only");
+    }
     let m = message.to_lowercase();
     let mut cipher_text: String = "".to_string();
     let mut key_iteration: usize = 0;
@@ -64,8 +67,8 @@ pub fn encode_vignere(message: String, key: String) -> Result<String, &'static s
             return Ok(cipher_text);
         } else {
             let new_char_index = (char_to_pos(message_char)
-                + char_to_pos(k.chars().nth(key_iteration).unwrap()))
-                % 26;
+            + char_to_pos(k.chars().nth(key_iteration).unwrap()))
+            % 26;
             let key_length = k.chars().count() - 1;
             if key_iteration == key_length {
                 key_iteration -= key_length;
