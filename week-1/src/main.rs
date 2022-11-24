@@ -22,7 +22,7 @@ fn main() {
                     .expect("Failed to read line");
 
                 let res = encode_vignere(message, key);
-                println!("your ciphertext ser: {}", res);
+                println!("your ciphertext ser: {}", res.unwrap());
             } else {
                 let mut ciphertext = String::new();
                 println!("Please input your ciphertext.");
@@ -52,16 +52,16 @@ fn char_to_pos(input: char) -> usize {
     ALPHABET.chars().position(|c| input == c).unwrap()
 }
 
-pub fn encode_vignere(message: String, mut key: String) -> String {
+pub fn encode_vignere(message: String, key: String) -> Result<String, &'static str> {
     let k = key.trim().to_string().to_lowercase();
     let m = message.to_lowercase();
-    let mut result: String = "".to_string();
+    let mut cipher_text: String = "".to_string();
     let mut key_iteration: usize = 0;
     for message_char in m.chars() {
-        if message_char == ' ' {
-            result.push(' ');
+        if message_char == ' ' || !message_char.is_alphabetic() {
+            cipher_text.push(message_char);
         } else if message_char == '\n' {
-            return result;
+            return Ok(cipher_text);
         } else {
             let new_char_index = (char_to_pos(message_char)
                 + char_to_pos(k.chars().nth(key_iteration).unwrap()))
@@ -73,22 +73,22 @@ pub fn encode_vignere(message: String, mut key: String) -> String {
                 key_iteration += 1;
             }
             let new_char = ALPHABET.chars().nth(new_char_index).unwrap();
-            result.push(new_char);
+            cipher_text.push(new_char);
         }
     }
-    result
+    Ok(cipher_text)
 }
 
-pub fn decode_vignere(ciphertext: String, key: String) -> String {
+pub fn decode_vignere(ciphertext: String, key: String) -> Result<String, &'static str> {
     let k = key.trim().to_string().to_lowercase();
     let c = ciphertext.to_lowercase();
-    let mut result: String = "".to_string();
+    let mut message: String = "".to_string();
     let mut key_iteration: usize = 0;
     for cipher_char in c.chars() {
-        if cipher_char == ' ' {
-            result.push(' ');
+        if !cipher_char.is_alphabetic() {
+            message.push(cipher_char);
         } else if cipher_char == '\n' {
-            return result;
+            return Ok(message);
         } else {
             let new_char_index = (char_to_pos(cipher_char) + 26
                 - char_to_pos(k.chars().nth(key_iteration).unwrap()))
@@ -100,10 +100,10 @@ pub fn decode_vignere(ciphertext: String, key: String) -> String {
                 key_iteration += 1;
             }
             let new_char = ALPHABET.chars().nth(new_char_index).unwrap();
-            result.push(new_char);
+            message.push(new_char);
         }
     }
-    result
+    Ok(message)
 }
 
 fn select_screen() -> std::io::Result<(String)> {
